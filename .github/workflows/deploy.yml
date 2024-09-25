@@ -73,6 +73,6 @@ jobs:
               sudo docker rm -f $CONTAINERS
             fi
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest
-            cd home/ubuntu/compose
+            cd /home/ubuntu/compose
             sudo docker-compose up -d backend-server
             sudo docker image prune -f
