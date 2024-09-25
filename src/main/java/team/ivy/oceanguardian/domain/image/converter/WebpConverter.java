@@ -12,7 +12,7 @@ public class WebpConverter {
 
     // WebP로 손실 압축 변환
     public static File convertToWebp(MultipartFile multipartFile, String fileName) throws IOException {
-        File originalFile = FileUtils.convertMultipartFileToFile(multipartFile); // MultipartFile을 File로 변환
+        File originalFile = FileUtils.convertMultipartFileToFile(multipartFile);
 
         try {
             return ImmutableImage.loader()
@@ -25,7 +25,7 @@ public class WebpConverter {
 
     // WebP로 무손실 압축 변환
     public static File convertToWebpWithLossless(MultipartFile multipartFile, String fileName) throws IOException {
-        File originalFile = FileUtils.convertMultipartFileToFile(multipartFile); // MultipartFile을 File로 변환
+        File originalFile = FileUtils.convertMultipartFileToFile(multipartFile);
 
         try {
             return ImmutableImage.loader()

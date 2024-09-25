@@ -33,13 +33,14 @@ public class S3Service {
             // ObjectMetadata 생성
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType("image/webp"); // ContentType을 'image/webp'로 설정
-            // S3에 파일 업로드
+
             amazonS3.putObject(new PutObjectRequest(bucketName, webpFile.getName(), webpFile)
                 .withCannedAcl(CannedAccessControlList.PublicRead)
                 .withMetadata(metadata));
+
             log.info("s3에 업로드 성공: {}", webpFile.getName());
-            // 업로드된 파일의 URL 반환
-            return amazonS3.getUrl(bucketName, fileName).toString();
+
+            return amazonS3.getUrl(bucketName, fileName).toString(); // 업로드 된 파일의 URL 반환
         } finally {
             webpFile.delete();  //변환된 임시 webpFile 삭제
         }

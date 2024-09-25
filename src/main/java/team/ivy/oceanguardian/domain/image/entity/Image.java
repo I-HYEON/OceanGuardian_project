@@ -13,12 +13,14 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team.ivy.oceanguardian.domain.cleanup.entity.Cleanup;
 import team.ivy.oceanguardian.domain.monitoring.entity.Monitoring;
 import team.ivy.oceanguardian.global.entity.AuditBaseEntity;
 
 @Entity
+@Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

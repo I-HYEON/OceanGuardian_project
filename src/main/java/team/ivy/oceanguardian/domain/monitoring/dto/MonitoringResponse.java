@@ -1,21 +1,23 @@
 package team.ivy.oceanguardian.domain.monitoring.dto;
 
+
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import team.ivy.oceanguardian.domain.member.entity.Member;
 import team.ivy.oceanguardian.domain.monitoring.entity.Monitoring;
 
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Builder
-@Schema(description = "조사 데이터 저장용 DTO")
-public class MonitoringRequest {
+@Schema(description = "조사 데이터 응답용 DTO")
+public class MonitoringResponse {
 
+
+    @Schema(description = "데이터 일련번호", example = "20240923162093e9c")
+    private String serialNumber;
     @Schema(description = "조사 위치의 위도", example = "37.7749")
     private Double latitude;
     @Schema(description = "조사 위치의 경도", example = "127.4194")
@@ -28,16 +30,19 @@ public class MonitoringRequest {
     private Double predictedTrashVolume;
     @Schema(description = "주요 쓰레기 타입 (1~5)", example = "2")
     private byte mainTrashType;
+    @Schema(description = "전경 이미지 url")
+    private String monitoringImageUrl;
 
-    public Monitoring toEntity(String serialNumber, Point location, Member member) {
-        return Monitoring.builder()
-            .serialNumber(serialNumber)
-            .location(location)
-            .coastName(coastName)
-            .coastLength(coastLength)
-            .predictedTrashVolume(predictedTrashVolume)
-            .mainTrashType(mainTrashType)
-            .member(member)
+    public static MonitoringResponse toDto(Monitoring monitoring, String monitoringImageUrl) {
+        return MonitoringResponse.builder()
+            .serialNumber(monitoring.getSerialNumber())
+            .latitude(monitoring.getLocation().getY())
+            .longitude(monitoring.getLocation().getX())
+            .coastName(monitoring.getCoastName())
+            .coastLength(monitoring.getCoastLength())
+            .predictedTrashVolume(monitoring.getPredictedTrashVolume())
+            .mainTrashType(monitoring.getMainTrashType())
+            .monitoringImageUrl(monitoringImageUrl)
             .build();
     }
 

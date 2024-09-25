@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import team.ivy.oceanguardian.domain.member.dto.JwtToken;
+import team.ivy.oceanguardian.domain.member.dto.LoginResponse;
 import team.ivy.oceanguardian.domain.member.dto.MemberResponse;
 import team.ivy.oceanguardian.domain.member.dto.SignUpRequest;
 import team.ivy.oceanguardian.domain.member.entity.Member;
@@ -36,7 +37,7 @@ public class MemberService {
         return MemberResponse.toDto(memberRepository.save(signUpRequest.toEntity(encodedPassword)));
     }
 
-    public JwtToken login(String phoneNumber, String password) {
+    public LoginResponse login(String phoneNumber, String password) {
         // 사용자 존재 여부 확인
         Member member = memberRepository.findByPhoneNumber(phoneNumber)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
@@ -51,7 +52,7 @@ public class MemberService {
         // authenticationToken으로 검증 진행
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        return jwtTokenProvider.generateToken(authentication);
+        return LoginResponse.toDto(member,jwtTokenProvider.generateToken(authentication));
 
     }
 
