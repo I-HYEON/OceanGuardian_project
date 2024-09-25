@@ -1,0 +1,78 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
+
+#워크 플로우 이름
+name: CI/CD for dive2024
+
+# 워크 플로우가 언제 실행될지를 정함
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+# 워크 플로우의 깃 레포에 대한 권한을 읽기만 가능하게 설정
+permissions:
+  contents: read
+
+# 워크 플로우에서 할 작업 정의
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    steps:
+      # 저장소 checkout
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # JDK setting
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # Github secrets로부터 데이터를 받아서, 워크 플로우에 파일을 생성
+      - name: make application.yml
+        run: |
+          cd ./src/main/resources
+          touch ./application.yml
+          echo "${{ secrets.YML }}" > ./application.yml
+        shell: bash
+
+        # gradle wrapper 파일에 실행 권한 부여
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      # Spring boot application 빌드
+      - name: Build with Gradle
+        run: ./gradlew clean build
+
+        # dockerfile을 통해 이미지를 빌드하고, 이를 docker repo로 push
+      - name: Docker build & push to docker repo
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest
+
+      ## deploy to production
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        id: deploy
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          username: ubuntu
+          script: |
+            sudo docker ps
+            CONTAINERS=$(sudo docker ps -qa)
+            if [ -n "$CONTAINERS" ]; then
+              sudo docker rm -f $CONTAINERS
+            fi
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest
+            cd home/ubuntu/compose
+            sudo docker-compose up -d backend-server
+            sudo docker image prune -f
