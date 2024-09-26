@@ -2,6 +2,7 @@ package team.ivy.oceanguardian.domain.cleanup.service;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -157,5 +158,10 @@ public class CleanupService {
             .totalCount(cleanupPage.getTotalElements())
             .cleanupList(cleanupResponsePage.getContent())
             .build();
+    }
+
+    @Transactional
+    public List<Cleanup> getCleanupsBetween(LocalDateTime startTime, LocalDateTime endTime) {
+        return cleanupRepository.findAllByCreatedAtBetween(startTime, endTime);
     }
 }

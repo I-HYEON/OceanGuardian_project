@@ -2,6 +2,7 @@ package team.ivy.oceanguardian.domain.monitoring.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -23,9 +24,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import team.ivy.oceanguardian.domain.cleanup.entity.Cleanup;
 import team.ivy.oceanguardian.domain.monitoring.dto.MonitoringListResponse;
 import team.ivy.oceanguardian.domain.monitoring.dto.MonitoringRequest;
 import team.ivy.oceanguardian.domain.monitoring.dto.MonitoringResponse;
+import team.ivy.oceanguardian.domain.monitoring.entity.Monitoring;
 import team.ivy.oceanguardian.domain.monitoring.service.MonitoringService;
 import team.ivy.oceanguardian.global.apiresponse.ApiResponse;
 
@@ -77,6 +80,15 @@ public class MonitoringController {
         @PathVariable Long monitoringId
     ) {
         return ApiResponse.success(monitoringService.deleteMonitoring(monitoringId),"조사 데이터 삭제 성공");
+    }
+
+    @Operation(summary = "지도용 예측(조사) 양 데이터", description = "위치 기반 예측(조사) 쓰레기양 표시")
+    @GetMapping(value = "/map/monitorings")
+    public ResponseEntity<ApiResponse<List<Monitoring>>> getMonitoringsBetween(
+        @RequestParam LocalDateTime startTIme,
+        @RequestParam LocalDateTime endTime
+    ) {
+        return ApiResponse.success(monitoringService.getMonitoringsBetween(startTIme, endTime),"기간별 예측 쓰레기양 조회 성공");
     }
 
 }

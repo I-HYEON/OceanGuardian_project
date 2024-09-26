@@ -2,6 +2,7 @@ package team.ivy.oceanguardian.domain.monitoring.service;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -16,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import team.ivy.oceanguardian.domain.cleanup.entity.Cleanup;
 import team.ivy.oceanguardian.domain.image.entity.Image;
 import team.ivy.oceanguardian.domain.image.repository.ImageRepository;
 import team.ivy.oceanguardian.domain.image.service.S3Service;
@@ -118,5 +120,10 @@ public class MonitoringService {
             .totalCount(monitoringPage.getTotalElements())
             .monitoringList(monitoringResponsePage.getContent())
             .build();
+    }
+
+    @Transactional
+    public List<Monitoring> getMonitoringsBetween(LocalDateTime startTime, LocalDateTime endTime) {
+        return monitoringRepository.findAllByCreatedAtBetween(startTime, endTime);
     }
 }

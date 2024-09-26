@@ -31,7 +31,7 @@ public class SignUpRequest {
     private String password;
     @Schema(description = "이름", example = "김지킴")
     private String name;
-    @Schema(description = "역할", example = "[\"MONITOR\"]")
+    @Schema(description = "역할", example = "[\"USER\"]")
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 

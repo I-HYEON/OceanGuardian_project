@@ -2,6 +2,8 @@ package team.ivy.oceanguardian.domain.cleanup.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import team.ivy.oceanguardian.domain.cleanup.dto.CleanupListResponse;
 import team.ivy.oceanguardian.domain.cleanup.dto.CleanupRequest;
 import team.ivy.oceanguardian.domain.cleanup.dto.CleanupResponse;
+import team.ivy.oceanguardian.domain.cleanup.entity.Cleanup;
 import team.ivy.oceanguardian.domain.cleanup.service.CleanupService;
 import team.ivy.oceanguardian.domain.member.dto.MemberResponse;
 import team.ivy.oceanguardian.domain.member.dto.SignUpRequest;
@@ -69,6 +72,15 @@ public class CleanupController {
         @PathVariable Long cleanupId
     ) {
         return ApiResponse.success(cleanupService.deleteCleanup(cleanupId),"청소 데이터 삭제 성공");
+    }
+
+    @Operation(summary = "지도용 쓰레기 양 데이터", description = "위치 기반 쓰레기양 표시")
+    @GetMapping(value = "/map/cleanups")
+    public ResponseEntity<ApiResponse<List<Cleanup>>> getCleanupsBetween(
+        @RequestParam LocalDateTime startTIme,
+        @RequestParam LocalDateTime endTime
+    ) {
+        return ApiResponse.success(cleanupService.getCleanupsBetween(startTIme, endTime),"기간별 실쓰레기양 조회 성공");
     }
 
 }
