@@ -74,5 +74,5 @@ jobs:
             fi
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest
             cd /home/ubuntu/compose
-            sudo docker-compose up -d backend-server
+            sudo docker-compose up -d
             sudo docker image prune -f

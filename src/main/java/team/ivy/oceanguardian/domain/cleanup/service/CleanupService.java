@@ -141,7 +141,13 @@ public class CleanupService {
 
     @Transactional
     public CleanupListResponse getCleanupList(Pageable pageable) {
-        Page<Cleanup> cleanupPage = cleanupRepository.findAll(pageable);
+
+        // 현재 로그인된 사용자 정보를 토대로 Member 객체 가져오기
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Member member = memberRepository.findByPhoneNumber(username)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+        Page<Cleanup> cleanupPage = cleanupRepository.findAllByMember(member, pageable);
         Page<CleanupSummary> cleanupResponsePage = cleanupPage.map(
             CleanupSummary::toDto);
 

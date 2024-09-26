@@ -103,7 +103,12 @@ public class MonitoringService {
 
     @Transactional
     public MonitoringListResponse getMonitoringList(Pageable pageable) {
-        Page<Monitoring> monitoringPage = monitoringRepository.findAll(pageable);
+        // 현재 로그인된 사용자 정보를 토대로 Member 객체 가져오기
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Member member = memberRepository.findByPhoneNumber(username)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+        Page<Monitoring> monitoringPage = monitoringRepository.findAllByMember(member, pageable);
         Page<MonitoringSummary> monitoringResponsePage = monitoringPage.map(
             MonitoringSummary::toDto);
 

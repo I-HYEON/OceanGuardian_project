@@ -23,6 +23,12 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @Operation(summary = "상태체크", description = "aws 로드밸런서의 상태체크용 api 입니다")
+    @GetMapping("/")
+    public ResponseEntity<ApiResponse<String>> getHealthCheck (){
+        return ApiResponse.success("서버 건강함","조회 성공");
+    }
+
     @Operation(summary = "테스트", description = "로그인이 되어있는지 확인할 수 있는 테스트용 api입니다")
     @GetMapping("/test")
     public ResponseEntity<ApiResponse<String>> getTest (){
