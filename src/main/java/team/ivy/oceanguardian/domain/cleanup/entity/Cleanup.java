@@ -28,7 +28,7 @@ public class Cleanup extends AuditBaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cleanup_id")
     private Long id;
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String serialNumber;
     @Column(columnDefinition = "geometry(Point, 4326)", nullable = false)
     private Point location;
@@ -43,6 +43,6 @@ public class Cleanup extends AuditBaseEntity {
     @Column(nullable = false)
     private Boolean pickupDone;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="member_id", nullable = false)
+    @JoinColumn(name="member_id", nullable = true)
     private Member member;
 }

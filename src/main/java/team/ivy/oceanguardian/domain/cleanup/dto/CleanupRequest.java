@@ -38,6 +38,7 @@ public class CleanupRequest {
             .actualTrashVolume(actualTrashVolume)
             .mainTrashType(mainTrashType)
             .member(member)
+            .pickupDone(Boolean.FALSE)
             .build();
     }
 
