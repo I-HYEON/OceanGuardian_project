@@ -123,7 +123,10 @@ public class MonitoringService {
     }
 
     @Transactional
-    public List<Monitoring> getMonitoringsBetween(LocalDateTime startTime, LocalDateTime endTime) {
-        return monitoringRepository.findAllByCreatedAtBetween(startTime, endTime);
+    public List<MonitoringResponse> getMonitoringsBetween(LocalDateTime startTime, LocalDateTime endTime) {
+
+        List<Monitoring> monitorings = monitoringRepository.findAllByCreatedAtBetween(startTime, endTime);
+        log.info("getMonitoringsBetween 데이터 개수"+monitorings.size());
+        return monitorings.stream().map(MonitoringResponse::toDto).toList();
     }
 }

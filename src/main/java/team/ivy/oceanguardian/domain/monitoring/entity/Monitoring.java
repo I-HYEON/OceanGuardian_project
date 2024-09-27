@@ -29,7 +29,7 @@ public class Monitoring extends AuditBaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "monitoring_id")
     private Long id;
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String serialNumber;
     @Column(columnDefinition = "geometry(Point, 4326)", nullable = false)
     private Point location;

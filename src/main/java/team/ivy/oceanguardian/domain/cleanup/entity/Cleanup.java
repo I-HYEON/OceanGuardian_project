@@ -43,6 +43,6 @@ public class Cleanup extends AuditBaseEntity {
     @Column(nullable = false)
     private Boolean pickupDone;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="member_id", nullable = true)
+    @JoinColumn(name="member_id", nullable = false)
     private Member member;
 }

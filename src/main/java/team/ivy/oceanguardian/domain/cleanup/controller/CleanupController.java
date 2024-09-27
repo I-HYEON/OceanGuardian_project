@@ -74,13 +74,27 @@ public class CleanupController {
         return ApiResponse.success(cleanupService.deleteCleanup(cleanupId),"청소 데이터 삭제 성공");
     }
 
-    @Operation(summary = "지도용 쓰레기 양 데이터", description = "위치 기반 쓰레기양 표시")
+    @Operation(summary = "지도용 실쓰레기 양 데이터", description = "위치 기반 쓰레기양 표시")
     @GetMapping(value = "/map/cleanups")
-    public ResponseEntity<ApiResponse<List<Cleanup>>> getCleanupsBetween(
+    public ResponseEntity<ApiResponse<List<CleanupResponse>>> getCleanupsBetween(
         @RequestParam LocalDateTime startTIme,
         @RequestParam LocalDateTime endTime
     ) {
         return ApiResponse.success(cleanupService.getCleanupsBetween(startTIme, endTime),"기간별 실쓰레기양 조회 성공");
+    }
+
+    @Operation(summary = "미수거 쓰레기 위치 데이터", description = "수거되지 않은 쓰레기 위치 표시")
+    @GetMapping(value = "/map/not-pickup")
+    public ResponseEntity<ApiResponse<List<CleanupResponse>>> getCleanupsNotPickup() {
+        return ApiResponse.success(cleanupService.getCleanupsNotPickup(),"미수거 쓰레기 조회 성공");
+    }
+
+    @Operation(summary = "미수거 -> 수거 상태 변경", description = "쓰레기 pk값을 받아 해당 데이터의 pickup 상태를 변경합니다")
+    @GetMapping(value = "/not-pickup/{cleanupPk}")
+    public ResponseEntity<ApiResponse<Void>> updatePickupStatus(
+        @PathVariable Long cleanupPk
+    ) {
+        return ApiResponse.success(cleanupService.updatePickupStatus(cleanupPk),"쓰레기 수거 성공");
     }
 
 }

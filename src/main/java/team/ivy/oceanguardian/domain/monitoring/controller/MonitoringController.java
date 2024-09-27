@@ -84,7 +84,7 @@ public class MonitoringController {
 
     @Operation(summary = "지도용 예측(조사) 양 데이터", description = "위치 기반 예측(조사) 쓰레기양 표시")
     @GetMapping(value = "/map/monitorings")
-    public ResponseEntity<ApiResponse<List<Monitoring>>> getMonitoringsBetween(
+    public ResponseEntity<ApiResponse<List<MonitoringResponse>>> getMonitoringsBetween(
         @RequestParam LocalDateTime startTIme,
         @RequestParam LocalDateTime endTime
     ) {

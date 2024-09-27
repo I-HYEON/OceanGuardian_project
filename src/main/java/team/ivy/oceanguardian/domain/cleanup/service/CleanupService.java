@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -27,10 +28,13 @@ import team.ivy.oceanguardian.domain.image.repository.ImageRepository;
 import team.ivy.oceanguardian.domain.image.service.S3Service;
 import team.ivy.oceanguardian.domain.member.entity.Member;
 import team.ivy.oceanguardian.domain.member.repository.MemberRepository;
+import team.ivy.oceanguardian.domain.monitoring.dto.MonitoringResponse;
+import team.ivy.oceanguardian.domain.monitoring.entity.Monitoring;
 import team.ivy.oceanguardian.global.exception.CustomException;
 import team.ivy.oceanguardian.global.exception.errorcode.ErrorCode;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class CleanupService {
     private final CleanupRepository cleanupRepository;
@@ -161,7 +165,37 @@ public class CleanupService {
     }
 
     @Transactional
-    public List<Cleanup> getCleanupsBetween(LocalDateTime startTime, LocalDateTime endTime) {
-        return cleanupRepository.findAllByCreatedAtBetween(startTime, endTime);
+    public List<CleanupResponse> getCleanupsBetween(LocalDateTime startTime, LocalDateTime endTime) {
+        List<Cleanup> cleanups = cleanupRepository.findAllByCreatedAtBetween(startTime, endTime);
+        log.info("getCleanupsBetween 데이터 개수"+cleanups.size());
+        return cleanups.stream().map(CleanupResponse::toDto).toList();
+    }
+
+    @Transactional
+    public List<CleanupResponse> getCleanupsNotPickup() {
+
+        List<Cleanup> cleanups = cleanupRepository.findAllByPickupDone(false);
+        log.info("getCleanupsNotPickup 데이터 개수"+cleanups.size());
+        return cleanups.stream().map(CleanupResponse::toDto).toList();
+    }
+
+    @Transactional
+    public Void updatePickupStatus(Long cleanupId) {
+        Cleanup cleanup = cleanupRepository.findById(cleanupId).orElseThrow();
+
+        // 청소 데이터 pickupDone 업데이트 후 저장
+        Cleanup savedCleanup = cleanupRepository.save(Cleanup.builder()
+            .id(cleanup.getId())
+            .serialNumber(cleanup.getSerialNumber())
+            .location(cleanup.getLocation())
+            .coastName(cleanup.getCoastName())
+            .coastLength(cleanup.getCoastLength())
+            .actualTrashVolume(cleanup.getActualTrashVolume())
+            .mainTrashType(cleanup.getMainTrashType())
+            .member(cleanup.getMember())
+            .pickupDone(Boolean.TRUE)
+            .build());
+
+        return null;
     }
 }

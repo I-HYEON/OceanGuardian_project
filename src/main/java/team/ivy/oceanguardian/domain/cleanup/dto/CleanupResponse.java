@@ -12,6 +12,8 @@ import team.ivy.oceanguardian.domain.monitoring.entity.Monitoring;
 @Schema(description = "청소 데이터 응답용 DTO")
 public class CleanupResponse {
 
+    @Schema(description = "pk값", example = "1")
+    private Long id;
     @Schema(description = "데이터 일련번호", example = "20240923162093e9c")
     private String serialNumber;
     @Schema(description = "청소 위치의 위도", example = "37.7749")
@@ -35,6 +37,7 @@ public class CleanupResponse {
 
     public static CleanupResponse toDto(Cleanup cleanup, String beforeViewImageUrl, String afterViewImageUrl, String completeViewImageUrl ) {
         return CleanupResponse.builder()
+            .id(cleanup.getId())
             .serialNumber(cleanup.getSerialNumber())
             .latitude(cleanup.getLocation().getY())
             .longitude(cleanup.getLocation().getX())
@@ -45,6 +48,22 @@ public class CleanupResponse {
             .beforeViewImageUrl(beforeViewImageUrl)
             .afterViewImageUrl(afterViewImageUrl)
             .completeViewImageUrl(completeViewImageUrl)
+            .build();
+    }
+
+    public static CleanupResponse toDto(Cleanup cleanup) {
+        return CleanupResponse.builder()
+            .id(cleanup.getId())
+            .serialNumber(cleanup.getSerialNumber())
+            .latitude(cleanup.getLocation().getY())
+            .longitude(cleanup.getLocation().getX())
+            .coastName(cleanup.getCoastName())
+            .coastLength(cleanup.getCoastLength())
+            .actualTrashVolume(cleanup.getActualTrashVolume())
+            .mainTrashType(cleanup.getMainTrashType())
+            .beforeViewImageUrl(null)
+            .afterViewImageUrl(null)
+            .completeViewImageUrl(null)
             .build();
     }
 

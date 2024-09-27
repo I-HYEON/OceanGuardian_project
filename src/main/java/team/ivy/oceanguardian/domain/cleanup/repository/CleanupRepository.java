@@ -15,4 +15,6 @@ public interface CleanupRepository extends JpaRepository<Cleanup, Long> {
     Page<Cleanup> findAllByMember(Member member, Pageable pageable);
 
     List<Cleanup> findAllByCreatedAtBetween(LocalDateTime startTime, LocalDateTime endTime);
+
+    List<Cleanup> findAllByPickupDone(Boolean pickupDone);
 }
