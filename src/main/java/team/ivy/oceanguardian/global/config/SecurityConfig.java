@@ -34,7 +34,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // 세션 상태를 Stateless로 설정
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**").permitAll() // Swagger 접근 허용
-                .requestMatchers("/").permitAll()  // 건강 체크
+                .requestMatchers("/api").permitAll()  // 건강 체크
                 .requestMatchers("/login").permitAll()  // 로그인
                 .requestMatchers("/signup").permitAll()  // 회원가입 엔드포인트는 인증 없이 접근 가능
 //                .requestMatchers("/test").hasRole("USER")  // /test는 USER 권한 필요

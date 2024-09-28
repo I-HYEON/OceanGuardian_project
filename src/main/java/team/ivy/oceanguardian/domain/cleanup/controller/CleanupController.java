@@ -1,6 +1,7 @@
 package team.ivy.oceanguardian.domain.cleanup.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -78,8 +80,22 @@ public class CleanupController {
     @Operation(summary = "지도용 실쓰레기 양 데이터", description = "위치 기반 쓰레기양 표시")
     @GetMapping(value = "/map/cleanups")
     public ResponseEntity<ApiResponse<List<CleanupResponse>>> getCleanupsBetween(
-        @RequestParam LocalDateTime startTIme,
-        @RequestParam LocalDateTime endTime
+        @Parameter(
+            description = "시작 시간",
+            example = "2017-11-01T00:00:00",
+            required = true
+        )
+        @RequestParam
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+        LocalDateTime startTIme,
+        @Parameter(
+            description = "조회 종료 시간",
+            example = "2017-12-02T23:59:59",
+            required = true
+        )
+        @RequestParam
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+        LocalDateTime endTime
     ) {
         return ApiResponse.success(cleanupService.getCleanupsBetween(startTIme, endTime),"기간별 실쓰레기양 조회 성공");
     }
