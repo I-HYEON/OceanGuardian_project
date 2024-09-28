@@ -1,11 +1,16 @@
 package team.ivy.oceanguardian.domain.cleanup.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
@@ -28,8 +33,6 @@ import team.ivy.oceanguardian.domain.image.repository.ImageRepository;
 import team.ivy.oceanguardian.domain.image.service.S3Service;
 import team.ivy.oceanguardian.domain.member.entity.Member;
 import team.ivy.oceanguardian.domain.member.repository.MemberRepository;
-import team.ivy.oceanguardian.domain.monitoring.dto.MonitoringResponse;
-import team.ivy.oceanguardian.domain.monitoring.entity.Monitoring;
 import team.ivy.oceanguardian.global.exception.CustomException;
 import team.ivy.oceanguardian.global.exception.errorcode.ErrorCode;
 
@@ -41,6 +44,9 @@ public class CleanupService {
     private final ImageRepository imageRepository;
     private final MemberRepository memberRepository;
     private final S3Service s3Service;
+
+    @PersistenceContext
+    private EntityManager entityManager;
     private final GeometryFactory geometryFactory = new GeometryFactory();
 
     @Transactional
@@ -181,7 +187,7 @@ public class CleanupService {
     }
 
     @Transactional
-    public Void updatePickupStatus(Long cleanupId) {
+    public Void updatePickupStatusToTrue(Long cleanupId) {
         Cleanup cleanup = cleanupRepository.findById(cleanupId).orElseThrow();
 
         // 청소 데이터 pickupDone 업데이트 후 저장
@@ -198,5 +204,50 @@ public class CleanupService {
             .build());
 
         return null;
+    }
+
+    @Transactional
+    public Void updatePickupStatusToFalse(Long cleanupId) {
+        Cleanup cleanup = cleanupRepository.findById(cleanupId).orElseThrow();
+
+        // 청소 데이터 pickupDone 업데이트 후 저장
+        Cleanup savedCleanup = cleanupRepository.save(Cleanup.builder()
+            .id(cleanup.getId())
+            .serialNumber(cleanup.getSerialNumber())
+            .location(cleanup.getLocation())
+            .coastName(cleanup.getCoastName())
+            .coastLength(cleanup.getCoastLength())
+            .actualTrashVolume(cleanup.getActualTrashVolume())
+            .mainTrashType(cleanup.getMainTrashType())
+            .member(cleanup.getMember())
+            .pickupDone(Boolean.FALSE)
+            .build());
+
+        return null;
+    }
+
+    /**
+     * 주어진 위도와 경도, 반경을 사용하여 원형 영역의 GeoJSON 데이터를 생성
+     */
+    public Map generateCircleGeoJson(double latitude, double longitude, double radius) {
+//        String query = "SELECT ST_AsGeoJSON(ST_Buffer(ST_SetSRID(ST_MakePoint(?1, ?2), 4326), ?3))";
+        String query = "SELECT ST_AsGeoJSON(ST_Transform(ST_Buffer(ST_Transform(ST_SetSRID(ST_MakePoint(?1, ?2), 4326), 3857), ?3), 4326))";
+
+
+        // 쿼리 실행
+        String geoJsonString =  (String) entityManager.createNativeQuery(query)
+            .setParameter(1, longitude)
+            .setParameter(2, latitude)
+            .setParameter(3, radius)
+            .getSingleResult();
+
+        // GeoJSON 문자열을 Map으로 변환
+        Map<String, Object> geoJsonMap = new HashMap<>();
+        try {
+            geoJsonMap = new ObjectMapper().readValue(geoJsonString, Map.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("GeoJson 변환 중 오류 발생", e);
+        }
+        return geoJsonMap;
     }
 }

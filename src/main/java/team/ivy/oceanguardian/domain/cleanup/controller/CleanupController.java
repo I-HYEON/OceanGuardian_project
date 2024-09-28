@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,8 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,13 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import team.ivy.oceanguardian.domain.cleanup.dto.CleanupListResponse;
 import team.ivy.oceanguardian.domain.cleanup.dto.CleanupRequest;
 import team.ivy.oceanguardian.domain.cleanup.dto.CleanupResponse;
-import team.ivy.oceanguardian.domain.cleanup.entity.Cleanup;
 import team.ivy.oceanguardian.domain.cleanup.service.CleanupService;
-import team.ivy.oceanguardian.domain.member.dto.MemberResponse;
-import team.ivy.oceanguardian.domain.member.dto.SignUpRequest;
-import team.ivy.oceanguardian.domain.monitoring.dto.MonitoringListResponse;
-import team.ivy.oceanguardian.domain.monitoring.dto.MonitoringRequest;
-import team.ivy.oceanguardian.domain.monitoring.dto.MonitoringResponse;
 import team.ivy.oceanguardian.global.apiresponse.ApiResponse;
 
 @RestController
@@ -106,12 +99,33 @@ public class CleanupController {
         return ApiResponse.success(cleanupService.getCleanupsNotPickup(),"미수거 쓰레기 조회 성공");
     }
 
-    @Operation(summary = "미수거 -> 수거 상태 변경", description = "쓰레기 pk값을 받아 해당 데이터의 pickup 상태를 변경합니다")
-    @PatchMapping(value = "/not-pickup/{cleanupPk}")
-    public ResponseEntity<ApiResponse<Void>> updatePickupStatus(
+    @Operation(summary = "미수거 -> 수거 상태 변경", description = "쓰레기 pk값을 받아 해당 데이터의 pickup 상태를 수거완료로 변경합니다")
+    @PatchMapping(value = "/pickup-do/{cleanupPk}")
+    public ResponseEntity<ApiResponse<Void>> updatePickupStatusToTrue(
         @PathVariable Long cleanupPk
     ) {
-        return ApiResponse.success(cleanupService.updatePickupStatus(cleanupPk),"쓰레기 수거 성공");
+        return ApiResponse.success(cleanupService.updatePickupStatusToTrue(cleanupPk),"쓰레기 수거 성공");
+    }
+
+    @Operation(summary = "수거 -> 미수거 상태 변경", description = "쓰레기 pk값을 받아 해당 데이터의 pickup 상태를 미수거로 변경합니다")
+    @PatchMapping(value = "/pickup-undo/{cleanupPk}")
+    public ResponseEntity<ApiResponse<Void>> updatePickupStatusToFalse(
+        @PathVariable Long cleanupPk
+    ) {
+        return ApiResponse.success(cleanupService.updatePickupStatusToFalse(cleanupPk),"쓰레기 원상복구");
+    }
+
+    /**
+     * 사용자로부터 위도, 경도, 반경을 입력받아 원형 영역의 GeoJSON 데이터를 반환
+     */
+    @Operation(summary = "버퍼 영역 반환", description = "사용자의 반경 n미터를 둘러싼 동심원을 반환합니다")
+    @GetMapping("/circle")
+    public ResponseEntity<ApiResponse<Map>> getCircleGeoJson(
+        @RequestParam double latitude,
+        @RequestParam double longitude,
+        @RequestParam double radius) {
+
+        return ApiResponse.success(cleanupService.generateCircleGeoJson(latitude, longitude, radius),"영역 전개");
     }
 
 }
