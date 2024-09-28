@@ -25,7 +25,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @Operation(summary = "상태체크", description = "aws 로드밸런서의 상태체크용 api 입니다")
-    @GetMapping("/")
+    @GetMapping("/check")
     public ResponseEntity<ApiResponse<String>> getHealthCheck (){
         return ApiResponse.success("서버 건강함","조회 성공");
     }

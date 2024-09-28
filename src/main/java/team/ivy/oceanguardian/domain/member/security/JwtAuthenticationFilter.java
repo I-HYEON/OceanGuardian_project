@@ -22,7 +22,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
     // 제외할 URL 목록 설정
     private static final List<String> EXCLUDED_URLS = Arrays.asList(
-        "/login", "/signup", "/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**"
+        "/check", "/login", "/signup", "/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**"
     );
 
     @Override
