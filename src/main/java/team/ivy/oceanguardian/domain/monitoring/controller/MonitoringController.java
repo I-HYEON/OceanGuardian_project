@@ -36,7 +36,7 @@ public class MonitoringController {
     @PostMapping(value = "/monitoring", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<Long>> createMonitoring(
         @RequestPart("monitoring") MonitoringRequest monitoringRequest,
-        @RequestPart("monitoringViewFile") MultipartFile monitoringViewFile
+        @RequestPart(value = "monitoringViewFile", required = false) MultipartFile monitoringViewFile
     ) throws IOException {
         return ApiResponse.success(monitoringService.createMonitoring(monitoringRequest, monitoringViewFile),"조사 데이터 저장 성공");
     }

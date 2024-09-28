@@ -37,9 +37,9 @@ public class CleanupController {
     @PostMapping(value = "/cleanup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<Long>> createCleanup(
         @RequestPart("cleanup") CleanupRequest cleanupRequest,
-        @RequestPart("beforeViewFile") MultipartFile beforeViewFile,
-        @RequestPart("afterViewFile") MultipartFile afterViewFile,
-        @RequestPart("completeViewFile") MultipartFile completeViewFile
+        @RequestPart(value = "beforeViewFile", required = false) MultipartFile beforeViewFile,
+        @RequestPart(value = "afterViewFile", required = false) MultipartFile afterViewFile,
+        @RequestPart(value = "completeViewFile", required = false) MultipartFile completeViewFile
     ) throws IOException {
         return ApiResponse.success(cleanupService.createCleanup(cleanupRequest, beforeViewFile, afterViewFile, completeViewFile),"청소데이터 저장 성공");
     }
