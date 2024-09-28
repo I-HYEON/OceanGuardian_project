@@ -91,7 +91,10 @@ public class MonitoringService {
         Monitoring monitoring = monitoringRepository.findById(monitoringId).orElseThrow();
         List<Image> images = imageRepository.findByMonitoring(monitoring);
 
-        return MonitoringResponse.toDto(monitoring, images.get(0).getUrl());
+        // 이미지 리스트가 비어 있는지 확인
+        String imageUrl = images.isEmpty() ? null : images.get(0).getUrl();
+
+        return MonitoringResponse.toDto(monitoring, imageUrl);
     }
 
     @Transactional
