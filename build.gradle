@@ -54,8 +54,8 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
 	// Image Processing
-	implementation "com.sksamuel.scrimage:scrimage-core:4.0.32"
-	implementation "com.sksamuel.scrimage:scrimage-webp:4.0.32"
+	implementation "com.sksamuel.scrimage:scrimage-core:4.0.20"
+	implementation "com.sksamuel.scrimage:scrimage-webp:4.0.20"
 
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
