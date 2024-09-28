@@ -55,7 +55,7 @@ public class MonitoringService {
         Point location = geometryFactory.createPoint(new Coordinate(monitoringRequest.getLongitude(), monitoringRequest.getLatitude()));
 
         // 일련 번호 생성 (yyyyMMddHH + UUID 7자리)
-        String serialNumber = generateSerialNumber();
+        String serialNumber = generateSerialNumber(monitoringRequest.getMainTrashType());
 
         // 조사 데이터 저장
         Monitoring savedMonitoring = monitoringRepository.save(monitoringRequest.toEntity(serialNumber, location, member));
@@ -77,12 +77,13 @@ public class MonitoringService {
         return savedMonitoring.getId();
     }
 
-//     일련번호 생성 메서드
-    private String generateSerialNumber() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH");
+    // 일련 번호 생성 메서드
+    private String generateSerialNumber(byte mainTrashType) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
         String datePrefix = sdf.format(new Date());
-        String uuidPart = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 7);
-        return datePrefix + uuidPart;
+        // String uuidPart = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 7);
+        String typePart = mainTrashType + "00";
+        return datePrefix + typePart;
     }
 
     public MonitoringResponse getMonitoring(Long monitoringId) {

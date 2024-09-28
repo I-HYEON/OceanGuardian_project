@@ -27,3 +27,7 @@ cloud:
       auto: false
     s3:
       bucket-name: ${S3_BUCKET_NAME}
+
+server:
+  servlet:
+    context-path: /api

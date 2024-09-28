@@ -53,8 +53,8 @@ public class CleanupService {
         // 위도와 경도를 PostGIS Point 객체로 변환
         Point location = geometryFactory.createPoint(new Coordinate(cleanupRequest.getLongitude(), cleanupRequest.getLatitude()));
 
-        // 일련번호 생성 (yyyyMMddHH + UUID 7자리)
-        String serialNumber = generateSerialNumber();
+        // 일련번호 생성
+        String serialNumber = generateSerialNumber(cleanupRequest.getMainTrashType());
 
         // 청소 데이터 저장
         Cleanup savedCleanup = cleanupRepository.save(cleanupRequest.toEntity(serialNumber, location, member));
@@ -102,11 +102,12 @@ public class CleanupService {
     }
 
     // 일련 번호 생성 메서드
-    private String generateSerialNumber() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH");
+    private String generateSerialNumber(byte mainTrashType) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
         String datePrefix = sdf.format(new Date());
-        String uuidPart = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 7);
-        return datePrefix + uuidPart;
+//        String uuidPart = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 7);
+        String typePart = mainTrashType + "00";
+        return datePrefix + typePart;
     }
 
     public CleanupResponse getCleanup(Long cleanupId) {

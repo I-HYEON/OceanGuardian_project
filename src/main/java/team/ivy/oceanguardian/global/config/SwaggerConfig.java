@@ -29,14 +29,14 @@ public class SwaggerConfig {
         return new OpenAPI()
             .addSecurityItem(securityRequirement)
             .components(components)
-            .addServersItem(new Server().url("/"))
+            .addServersItem(new Server().url("/api"))
             .info(apiInfo());
     }
 
 
     private Info apiInfo() {
         return new Info()
-            .title("OceanGuardian - Springdoc 문서")
+            .title("Badajikimi - Springdoc 문서")
             .description("바다지킴이 어플 API Swagger UI")
             .version("1.0.0");
     }

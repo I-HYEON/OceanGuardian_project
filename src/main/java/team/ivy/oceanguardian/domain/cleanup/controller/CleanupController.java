@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -90,7 +91,7 @@ public class CleanupController {
     }
 
     @Operation(summary = "미수거 -> 수거 상태 변경", description = "쓰레기 pk값을 받아 해당 데이터의 pickup 상태를 변경합니다")
-    @GetMapping(value = "/not-pickup/{cleanupPk}")
+    @PatchMapping(value = "/not-pickup/{cleanupPk}")
     public ResponseEntity<ApiResponse<Void>> updatePickupStatus(
         @PathVariable Long cleanupPk
     ) {
