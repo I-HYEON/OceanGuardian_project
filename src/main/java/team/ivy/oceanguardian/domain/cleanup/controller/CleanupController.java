@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import team.ivy.oceanguardian.domain.cleanup.dto.CleanupListResponse;
 import team.ivy.oceanguardian.domain.cleanup.dto.CleanupRequest;
 import team.ivy.oceanguardian.domain.cleanup.dto.CleanupResponse;
+import team.ivy.oceanguardian.domain.cleanup.dto.CleanupWithDistance;
 import team.ivy.oceanguardian.domain.cleanup.service.CleanupService;
 import team.ivy.oceanguardian.global.apiresponse.ApiResponse;
 
@@ -80,7 +80,7 @@ public class CleanupController {
         )
         @RequestParam
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-        LocalDateTime startTIme,
+        LocalDateTime startTime,
         @Parameter(
             description = "조회 종료 시간",
             example = "2017-12-02T23:59:59",
@@ -90,7 +90,7 @@ public class CleanupController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
         LocalDateTime endTime
     ) {
-        return ApiResponse.success(cleanupService.getCleanupsBetween(startTIme, endTime),"기간별 실쓰레기양 조회 성공");
+        return ApiResponse.success(cleanupService.getCleanupsBetween(startTime, endTime),"기간별 실쓰레기양 조회 성공");
     }
 
     @Operation(summary = "미수거 쓰레기 위치 데이터", description = "수거되지 않은 쓰레기 위치 표시")
@@ -115,17 +115,28 @@ public class CleanupController {
         return ApiResponse.success(cleanupService.updatePickupStatusToFalse(cleanupPk),"쓰레기 원상복구");
     }
 
-    /**
-     * 사용자로부터 위도, 경도, 반경을 입력받아 원형 영역의 GeoJSON 데이터를 반환
-     */
-    @Operation(summary = "버퍼 영역 반환", description = "사용자의 반경 n미터를 둘러싼 동심원을 반환합니다")
-    @GetMapping("/circle")
-    public ResponseEntity<ApiResponse<Map>> getCircleGeoJson(
-        @RequestParam double latitude,
-        @RequestParam double longitude,
-        @RequestParam double radius) {
+    @Operation(summary = "가까운 쓰레기 조회", description = "사용자로부터 위도, 경도를 입력받아 가장 가까운 미수거 쓰레기를 반환합니다")
+    @GetMapping("/closest-trash")
+    public ResponseEntity<ApiResponse<CleanupWithDistance>> getCircleGeoJson(
+        @Parameter(
+            description = "위도",
+            example = "35.1795",
+            required = true
+        )
+        @RequestParam
+        double latitude,
+        @Parameter(
+            description = "경도",
+            example = "129.0756",
+            required = true
+        )
+        @RequestParam
+        double longitude
+        ) {
+        cleanupService.getClosestCleanup(latitude, longitude);
 
-        return ApiResponse.success(cleanupService.generateCircleGeoJson(latitude, longitude, radius),"영역 전개");
+        return ApiResponse.success(cleanupService.getClosestCleanup(latitude, longitude),"가까운 쓰레기 조회 성공");
+
     }
 
 }

@@ -86,7 +86,7 @@ public class MonitoringController {
         )
         @RequestParam
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-        LocalDateTime startTIme,
+        LocalDateTime startTime,
         @Parameter(
             description = "조회 종료 시간",
             example = "2017-12-02T23:59:59",
@@ -96,7 +96,7 @@ public class MonitoringController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
         LocalDateTime endTime
     ) {
-        return ApiResponse.success(monitoringService.getMonitoringsBetween(startTIme, endTime),"기간별 예측 쓰레기양 조회 성공");
+        return ApiResponse.success(monitoringService.getMonitoringsBetween(startTime, endTime),"기간별 예측 쓰레기양 조회 성공");
     }
 
 }
