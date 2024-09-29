@@ -21,8 +21,9 @@ public interface CleanupRepository extends JpaRepository<Cleanup, Long> {
 
     List<Cleanup> findAllByPickupDone(Boolean pickupDone);
 
-    @Query(value = "SELECT c.coast_name, c.location, ST_DistanceSpheroid(c.location, :location) AS distance " +
+    @Query(value = "SELECT c.coast_name, c.location, ST_DistanceSphere(c.location, :location) AS distance " +
         "FROM cleanup c " +
+        "WHERE c.pickup_done = false " +
         "ORDER BY distance ASC " +
         "LIMIT 1",
         nativeQuery = true)
