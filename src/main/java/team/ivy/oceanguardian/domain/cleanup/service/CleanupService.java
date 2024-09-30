@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
@@ -142,8 +143,19 @@ public class CleanupService {
     public Void deleteCleanup(Long cleanupId) {
 
         Cleanup cleanup = cleanupRepository.findById(cleanupId).orElseThrow();
-        imageRepository.deleteByCleanup(cleanup);
-        cleanupRepository.delete(cleanup);
+        List<Image> images = imageRepository.findByCleanup(cleanup);
+
+        try {
+            for (Image image: images) {
+                s3Service.deleteFile(image.getDescription()+cleanup.getSerialNumber()+".webp");
+            }
+            imageRepository.deleteByCleanup(cleanup);
+            cleanupRepository.delete(cleanup);
+
+        } catch (Exception e) {
+            log.error("S3 파일 삭제 또는 DB 작업 중 오류 발생: {}", cleanupId, e);
+            throw new CustomException(ErrorCode.IMAGE_DELETE_ERROR);
+        }
 
         return null;
     }

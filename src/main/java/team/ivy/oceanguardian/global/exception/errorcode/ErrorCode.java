@@ -36,6 +36,7 @@ public enum ErrorCode {
 	ALREADY_EXIST_USER(409, "이미 존재하는 사용자입니다."),
 
 	//500 : INTERNAL SERVER ERROR
+	IMAGE_DELETE_ERROR(500, "S3 파일 삭제 혹은 이미지 객체 삭제 에러입니다"),
 	INTERNAL_SERVER_ERROR(500, "서버 내부 에러입니다.");
 
 	private final Integer status;

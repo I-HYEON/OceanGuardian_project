@@ -102,8 +102,17 @@ public class MonitoringService {
     public Void deleteMonitoring(Long monitoringId) {
 
         Monitoring monitoring = monitoringRepository.findById(monitoringId).orElseThrow();
-        imageRepository.deleteByMonitoring(monitoring);
-        monitoringRepository.delete(monitoring);
+        List<Image> images = imageRepository.findByMonitoring(monitoring);
+        try {
+            for (Image image: images) {
+                s3Service.deleteFile(image.getDescription()+monitoring.getSerialNumber()+".webp");
+            }
+            imageRepository.deleteByMonitoring(monitoring);
+            monitoringRepository.delete(monitoring);
+        } catch (Exception e) {
+            log.error("S3 파일 삭제 또는 DB 작업 중 오류 발생: {}", monitoringId, e);
+            throw new CustomException(ErrorCode.IMAGE_DELETE_ERROR);
+        }
 
         return null;
     }

@@ -1,5 +1,6 @@
 package team.ivy.oceanguardian.domain.image.service;
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -44,6 +45,15 @@ public class S3Service {
         } finally {
             webpFile.delete();  //변환된 임시 webpFile 삭제
         }
+    }
 
+    public void deleteFile(String fileName) {
+        try {
+            amazonS3.deleteObject(bucketName, fileName);
+            log.info("s3에서 파일 삭제 성공: {}", fileName);
+        } catch (AmazonServiceException e) {
+            log.error("파일 삭제 실패: {}", e.getMessage(), e);
+            throw e;
+        }
     }
 }
