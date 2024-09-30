@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -270,7 +271,9 @@ public class CleanupService {
     public List<CoastAvg> getGroupedByCoastName() {
         List<Object[]> results = cleanupRepository.findGroupedByCoastName();
 
-        return results.stream().map(row -> CoastAvg.toDto(
+        return results.stream()
+            .sorted(Comparator.comparing((Object[] row) -> ((Double) row[2] * 50) / (Double) row[1]).reversed())
+            .map(row -> CoastAvg.toDto(
             (String) row[0],
             Double.parseDouble(String.format("%.4f", ((Double) row[2] * 50) / ((Double) row[1]))),
             (Double) row[3],

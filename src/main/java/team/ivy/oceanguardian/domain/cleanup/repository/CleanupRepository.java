@@ -35,8 +35,7 @@ public interface CleanupRepository extends JpaRepository<Cleanup, Long> {
         "MIN(ST_Y(c.location)) AS latitude, " +
         "MIN(ST_X(c.location)) AS longitude " +
         "FROM cleanup c " +
-        "GROUP BY c.coast_name " +
-        "ORDER BY avgTrashVolume DESC",
+        "GROUP BY c.coast_name ",
         nativeQuery = true)
     List<Object[]> findGroupedByCoastName();
 }
