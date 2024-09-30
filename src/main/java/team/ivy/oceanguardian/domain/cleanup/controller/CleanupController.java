@@ -25,6 +25,7 @@ import team.ivy.oceanguardian.domain.cleanup.dto.CleanupListResponse;
 import team.ivy.oceanguardian.domain.cleanup.dto.CleanupRequest;
 import team.ivy.oceanguardian.domain.cleanup.dto.CleanupResponse;
 import team.ivy.oceanguardian.domain.cleanup.dto.CleanupWithDistance;
+import team.ivy.oceanguardian.domain.cleanup.dto.CoastAvg;
 import team.ivy.oceanguardian.domain.cleanup.service.CleanupService;
 import team.ivy.oceanguardian.global.apiresponse.ApiResponse;
 
@@ -137,6 +138,12 @@ public class CleanupController {
 
         return ApiResponse.success(cleanupService.getClosestCleanup(latitude, longitude),"가까운 쓰레기 조회 성공");
 
+    }
+
+    @Operation(summary = "해안별 평균 수거량 데이터", description = "해안별 평균 수거량 데이터")
+    @GetMapping(value = "/map/average")
+    public ResponseEntity<ApiResponse<List<CoastAvg>>> getGroupedByCoastName() {
+        return ApiResponse.success(cleanupService.getGroupedByCoastName(),"해안별 조회 성공");
     }
 
 }

@@ -22,6 +22,7 @@ import team.ivy.oceanguardian.domain.cleanup.dto.CleanupRequest;
 import team.ivy.oceanguardian.domain.cleanup.dto.CleanupResponse;
 import team.ivy.oceanguardian.domain.cleanup.dto.CleanupSummary;
 import team.ivy.oceanguardian.domain.cleanup.dto.CleanupWithDistance;
+import team.ivy.oceanguardian.domain.cleanup.dto.CoastAvg;
 import team.ivy.oceanguardian.domain.cleanup.entity.Cleanup;
 import team.ivy.oceanguardian.domain.cleanup.repository.CleanupRepository;
 import team.ivy.oceanguardian.domain.cleanup.utils.PointConverter;
@@ -241,5 +242,16 @@ public class CleanupService {
         double distance = ((Number) row[2]).doubleValue();
 
         return CleanupWithDistance.toDto(coastName,location_lat,location_lng,distance);
+    }
+    @Transactional
+    public List<CoastAvg> getGroupedByCoastName() {
+        List<Object[]> results = cleanupRepository.findGroupedByCoastName();
+
+        return results.stream().map(row -> CoastAvg.toDto(
+            (String) row[0],
+            Double.parseDouble(String.format("%.4f", ((Double) row[2] * 50) / ((Double) row[1]))),
+            (Double) row[3],
+            (Double) row[4]
+        )).toList();
     }
 }
