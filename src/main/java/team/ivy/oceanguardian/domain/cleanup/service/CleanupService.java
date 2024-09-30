@@ -1,11 +1,11 @@
 package team.ivy.oceanguardian.domain.cleanup.service;
 
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
@@ -26,6 +26,7 @@ import team.ivy.oceanguardian.domain.cleanup.dto.CoastAvg;
 import team.ivy.oceanguardian.domain.cleanup.entity.Cleanup;
 import team.ivy.oceanguardian.domain.cleanup.repository.CleanupRepository;
 import team.ivy.oceanguardian.domain.cleanup.utils.PointConverter;
+import team.ivy.oceanguardian.domain.excel.service.ExcelService;
 import team.ivy.oceanguardian.domain.image.entity.Image;
 import team.ivy.oceanguardian.domain.image.repository.ImageRepository;
 import team.ivy.oceanguardian.domain.image.service.S3Service;
@@ -42,6 +43,7 @@ public class CleanupService {
     private final ImageRepository imageRepository;
     private final MemberRepository memberRepository;
     private final S3Service s3Service;
+    private final ExcelService excelService;
     private final GeometryFactory geometryFactory = new GeometryFactory();
 
     @Transactional
@@ -171,6 +173,15 @@ public class CleanupService {
         List<Cleanup> cleanups = cleanupRepository.findAllByCreatedAtBetween(startTime, endTime);
         log.info("getCleanupsBetween 데이터 개수"+cleanups.size());
         return cleanups.stream().map(CleanupResponse::toDto).toList();
+    }
+
+    @Transactional
+    public void downloadCleanupData(LocalDateTime startTime, LocalDateTime endTime, HttpServletResponse response)
+        throws IOException {
+        log.info("청소 데이터 다운로드");
+        List<Cleanup> cleanups = cleanupRepository.findAllByCreatedAtBetween(startTime, endTime);
+
+        excelService.downloadCleanupExcelFile(cleanups, response);
     }
 
     @Transactional

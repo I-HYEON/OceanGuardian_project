@@ -17,7 +17,7 @@ import team.ivy.oceanguardian.global.apiresponse.ApiResponse;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name="Member", description = "회원 컨트롤러")
+@Tag(name="member-controller", description = "회원 관리 컨트롤러")
 public class MemberController {
 
     private final MemberService memberService;

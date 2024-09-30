@@ -4,10 +4,6 @@ package team.ivy.oceanguardian.domain.monitoring.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.locationtech.jts.geom.Point;
-import team.ivy.oceanguardian.domain.member.entity.Member;
 import team.ivy.oceanguardian.domain.monitoring.entity.Monitoring;
 
 @Data

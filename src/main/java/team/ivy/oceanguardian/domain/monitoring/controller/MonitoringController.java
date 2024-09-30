@@ -2,6 +2,8 @@ package team.ivy.oceanguardian.domain.monitoring.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +30,7 @@ import team.ivy.oceanguardian.global.apiresponse.ApiResponse;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name="monitoring-controller", description = "조사 / 관리 모드 관련 컨트롤러")
 public class MonitoringController {
 
     private final MonitoringService monitoringService;
@@ -97,6 +100,30 @@ public class MonitoringController {
         LocalDateTime endTime
     ) {
         return ApiResponse.success(monitoringService.getMonitoringsBetween(startTime, endTime),"기간별 예측 쓰레기양 조회 성공");
+    }
+
+    @Operation(summary = "조사 데이터 다운로드", description = "호출하면 조건에 맞는 조사데이터가 xsl형식으로 다운로드됩니다.")
+    @GetMapping(value = "/download/monitoring")
+    public void downloadMonitoringData(
+        @Parameter(
+            description = "시작 시간",
+            example = "2017-11-01T00:00:00",
+            required = true
+        )
+        @RequestParam
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+        LocalDateTime startTime,
+        @Parameter(
+            description = "조회 종료 시간",
+            example = "2017-12-02T23:59:59",
+            required = true
+        )
+        @RequestParam
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+        LocalDateTime endTime,
+        HttpServletResponse response
+    ) throws IOException {
+        monitoringService.downloadMonitoringData(startTime, endTime, response);
     }
 
 }

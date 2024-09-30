@@ -1,5 +1,6 @@
 package team.ivy.oceanguardian.domain.monitoring.service;
 
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import team.ivy.oceanguardian.domain.excel.service.ExcelService;
 import team.ivy.oceanguardian.domain.image.entity.Image;
 import team.ivy.oceanguardian.domain.image.repository.ImageRepository;
 import team.ivy.oceanguardian.domain.image.service.S3Service;
@@ -39,6 +41,7 @@ public class MonitoringService {
     private final ImageRepository imageRepository;
     private final MemberRepository memberRepository;
     private final S3Service s3Service;
+    private final ExcelService excelService;
     private final GeometryFactory geometryFactory = new GeometryFactory();
 
     @Transactional
@@ -130,5 +133,14 @@ public class MonitoringService {
         List<Monitoring> monitorings = monitoringRepository.findAllByCreatedAtBetween(startTime, endTime);
         log.info("getMonitoringsBetween 데이터 개수"+monitorings.size());
         return monitorings.stream().map(MonitoringResponse::toDto).toList();
+    }
+
+    @Transactional
+    public void downloadMonitoringData(LocalDateTime startTime, LocalDateTime endTime, HttpServletResponse response)
+        throws IOException {
+        log.info("조사 데이터 다운로드");
+        List<Monitoring> monitorings = monitoringRepository.findAllByCreatedAtBetween(startTime, endTime);
+
+        excelService.downloadMonitoringExcelFile(monitorings, response);
     }
 }
