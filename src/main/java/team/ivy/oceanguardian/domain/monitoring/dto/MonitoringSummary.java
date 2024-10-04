@@ -21,12 +21,15 @@ public class MonitoringSummary {
     private LocalDateTime createdAt;
     @Schema(description = "수정 날짜")
     private LocalDateTime updatedAt;
+    @Schema(description = "처리 여부")
+    private Boolean isResolved;
 
     public static MonitoringSummary toDto(Monitoring monitoring) {
         return MonitoringSummary.builder()
             .id(monitoring.getId())
             .serialNumber(monitoring.getSerialNumber())
             .coastName(monitoring.getCoastName())
+            .isResolved(monitoring.getIsResolved())
             .createdAt(monitoring.getCreatedAt())
             .updatedAt(monitoring.getUpdatedAt())
             .build();

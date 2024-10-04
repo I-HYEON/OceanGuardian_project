@@ -14,4 +14,6 @@ public interface MonitoringRepository extends JpaRepository<Monitoring, Long> {
     Page<Monitoring> findAllByMember (Member member, Pageable pageable);
 
     List<Monitoring> findAllByCreatedAtBetween(LocalDateTime startTime, LocalDateTime endTime);
+
+    Page<Monitoring> findAllByCreatedAtBetween(LocalDateTime startTime, LocalDateTime endTime, Pageable pageable);
 }

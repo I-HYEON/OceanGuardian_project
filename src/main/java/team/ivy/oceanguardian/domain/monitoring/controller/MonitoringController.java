@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -126,4 +127,29 @@ public class MonitoringController {
         monitoringService.downloadMonitoringData(startTime, endTime, response);
     }
 
+    @Operation(summary = "관리자용 조사 데이터 리스트 조회", description = "page는 요청할 페이지 쪽수, size는 데이터의 갯수를 의미")
+    @GetMapping(value = "/admin/monitoring-list")
+    public ResponseEntity<ApiResponse<MonitoringListResponse>> getMonitoringListLatest(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return ApiResponse.success(monitoringService.getMonitoringListLatest(pageable),"ADMIN용 조사 리스트 조회 성공");
+    }
+
+    @Operation(summary = "미해결 -> 해결 상태 변경", description = "조사 pk값을 받아 해당 데이터의 isResolved 상태를 해결로 변경합니다")
+    @PatchMapping(value = "/monitoring-solved/{monitoringPk}")
+    public ResponseEntity<ApiResponse<Long>> updateSolveStatusToTrue(
+        @PathVariable Long monitoringPk
+    ) {
+        return ApiResponse.success(monitoringService.updateSolveStatusToTrue(monitoringPk),"조사한 쓰레기 해결");
+    }
+
+    @Operation(summary = "해결 -> 미해결 상태 변경", description = "조사 pk값을 받아 해당 데이터의 isResolved 상태를 미해결로 변경합니다")
+    @PatchMapping(value = "/monitoring-unresolved/{monitoringPk}")
+    public ResponseEntity<ApiResponse<Long>> updateSolveStatusToFalse(
+        @PathVariable Long monitoringPk
+    ) {
+        return ApiResponse.success(monitoringService.updateSolveStatusToFalse(monitoringPk),"조사한 쓰레기 미해결");
+    }
 }

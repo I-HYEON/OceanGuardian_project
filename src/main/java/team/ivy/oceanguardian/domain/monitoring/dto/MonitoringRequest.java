@@ -38,6 +38,7 @@ public class MonitoringRequest {
             .predictedTrashVolume(predictedTrashVolume)
             .mainTrashType(mainTrashType)
             .member(member)
+            .isResolved(Boolean.FALSE)
             .build();
     }
 

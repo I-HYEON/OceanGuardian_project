@@ -147,9 +147,65 @@ public class MonitoringService {
     @Transactional
     public void downloadMonitoringData(LocalDateTime startTime, LocalDateTime endTime, HttpServletResponse response)
         throws IOException {
-        log.info("조사 데이터 다운로드");
         List<Monitoring> monitorings = monitoringRepository.findAllByCreatedAtBetween(startTime, endTime);
 
         excelService.downloadMonitoringExcelFile(monitorings, response);
+    }
+
+    @Transactional
+    public MonitoringListResponse getMonitoringListLatest(Pageable pageable) {
+        LocalDateTime endTime = LocalDateTime.now();
+        LocalDateTime startTime = endTime.minusMonths(3);
+
+        Page<Monitoring> monitoringPage = monitoringRepository.findAllByCreatedAtBetween(startTime,endTime,pageable);
+        Page<MonitoringSummary> monitoringResponsePage = monitoringPage.map(
+            MonitoringSummary::toDto);
+
+        return MonitoringListResponse.builder()
+            .maxPage(monitoringPage.getTotalPages())
+            .nowPage(monitoringPage.getNumber())
+            .totalCount(monitoringPage.getTotalElements())
+            .monitoringList(monitoringResponsePage.getContent())
+            .build();
+    }
+
+    @Transactional
+    public Long updateSolveStatusToTrue(Long monitoringId) {
+        Monitoring monitoring = monitoringRepository.findById(monitoringId).orElseThrow();
+
+        // 조사 데이터 isResolved 업데이트 후 저장
+        Monitoring savedMonitoring = monitoringRepository.save(Monitoring.builder()
+                .id(monitoring.getId())
+                .serialNumber(monitoring.getSerialNumber())
+                .location(monitoring.getLocation())
+                .coastName(monitoring.getCoastName())
+                .coastLength(monitoring.getCoastLength())
+                .predictedTrashVolume(monitoring.getPredictedTrashVolume())
+                .mainTrashType(monitoring.getMainTrashType())
+                .member(monitoring.getMember())
+                .isResolved(Boolean.TRUE)
+            .build());
+
+        return savedMonitoring.getId();
+    }
+
+    @Transactional
+    public Long updateSolveStatusToFalse(Long monitoringId) {
+        Monitoring monitoring = monitoringRepository.findById(monitoringId).orElseThrow();
+
+        // 조사 데이터 isResolved 업데이트 후 저장
+        Monitoring savedMonitoring = monitoringRepository.save(Monitoring.builder()
+            .id(monitoring.getId())
+            .serialNumber(monitoring.getSerialNumber())
+            .location(monitoring.getLocation())
+            .coastName(monitoring.getCoastName())
+            .coastLength(monitoring.getCoastLength())
+            .predictedTrashVolume(monitoring.getPredictedTrashVolume())
+            .mainTrashType(monitoring.getMainTrashType())
+            .member(monitoring.getMember())
+            .isResolved(Boolean.FALSE)
+            .build());
+
+        return savedMonitoring.getId();
     }
 }

@@ -1,9 +1,11 @@
 package team.ivy.oceanguardian.domain.cleanup.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.Optional;
 import lombok.Builder;
 import lombok.Data;
 import team.ivy.oceanguardian.domain.cleanup.entity.Cleanup;
+import team.ivy.oceanguardian.domain.image.entity.Image;
 import team.ivy.oceanguardian.domain.monitoring.dto.MonitoringResponse;
 import team.ivy.oceanguardian.domain.monitoring.entity.Monitoring;
 
@@ -64,6 +66,22 @@ public class CleanupResponse {
             .beforeViewImageUrl(null)
             .afterViewImageUrl(null)
             .completeViewImageUrl(null)
+            .build();
+    }
+
+    public static CleanupResponse toDto(Cleanup cleanup, Optional<Image> imageOptional) {
+        return CleanupResponse.builder()
+            .id(cleanup.getId())
+            .serialNumber(cleanup.getSerialNumber())
+            .latitude(cleanup.getLocation().getY())
+            .longitude(cleanup.getLocation().getX())
+            .coastName(cleanup.getCoastName())
+            .coastLength(cleanup.getCoastLength())
+            .actualTrashVolume(cleanup.getActualTrashVolume())
+            .mainTrashType(cleanup.getMainTrashType())
+            .beforeViewImageUrl(null)
+            .afterViewImageUrl(null)
+            .completeViewImageUrl(imageOptional.map(Image::getUrl).orElse(null))
             .build();
     }
 

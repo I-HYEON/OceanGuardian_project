@@ -21,6 +21,8 @@ public interface CleanupRepository extends JpaRepository<Cleanup, Long> {
 
     List<Cleanup> findAllByPickupDone(Boolean pickupDone);
 
+    Page<Cleanup> findAllByCreatedAtBetween(LocalDateTime startTime, LocalDateTime endTime, Pageable pageable);
+
     @Query(value = "SELECT c.coast_name, c.location, ST_DistanceSphere(c.location, :location) AS distance " +
         "FROM cleanup c " +
         "WHERE c.pickup_done = false " +

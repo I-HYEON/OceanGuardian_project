@@ -201,7 +201,10 @@ public class CleanupService {
 
         List<Cleanup> cleanups = cleanupRepository.findAllByPickupDone(false);
         log.info("getCleanupsNotPickup 데이터 개수"+cleanups.size());
-        return cleanups.stream().map(CleanupResponse::toDto).toList();
+        return cleanups.stream().map(cleanup -> {
+            Optional<Image> image = imageRepository.findByCleanupAndDescription(cleanup, "집하완료");
+            return CleanupResponse.toDto(cleanup, image);
+        }).toList();
     }
 
     @Transactional
@@ -286,5 +289,22 @@ public class CleanupService {
         List<Object[]> results = cleanupRepository.findGroupedByCoastName();
 
         excelService.downloadAvgExcelFile(results, response);
+    }
+
+    @Transactional
+    public CleanupListResponse getCleanupListLatest(Pageable pageable) {
+        LocalDateTime endTime = LocalDateTime.now();
+        LocalDateTime startTime = endTime.minusMonths(3);
+
+        Page<Cleanup> cleanupPage = cleanupRepository.findAllByCreatedAtBetween(startTime, endTime, pageable);
+        Page<CleanupSummary> cleanupResponsePage = cleanupPage.map(
+            CleanupSummary::toDto);
+
+        return CleanupListResponse.builder()
+            .maxPage(cleanupPage.getTotalPages())
+            .nowPage(cleanupPage.getNumber())
+            .totalCount(cleanupPage.getTotalElements())
+            .cleanupList(cleanupResponsePage.getContent())
+            .build();
     }
 }

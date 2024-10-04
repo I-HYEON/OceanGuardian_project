@@ -130,4 +130,14 @@ public class CleanupController {
     public void downloadAvgData(HttpServletResponse response) throws IOException {
         cleanupService.downloadAvgData(response);
     }
+
+    @Operation(summary = "관리자용 청소 리스트 조회", description = "page는 요청할 페이지 쪽수, size는 데이터의 갯수를 의미")
+    @GetMapping(value = "/cleanup-list/admin")
+    public ResponseEntity<ApiResponse<CleanupListResponse>> getCleanupListLatest(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return ApiResponse.success(cleanupService.getCleanupListLatest(pageable),"ADMIN용 청소 리스트 조회 성공");
+    }
 }
