@@ -136,4 +136,42 @@ public class ExcelService {
         workbook.close();
         response.getOutputStream().flush(); // 데이터 전송 완료 후 flush
     }
+
+    public void downloadAvgExcelFile(List<Object[]> data, HttpServletResponse response) throws IOException {
+        // 워크북 생성 (.xlsx 파일 형식)
+        Workbook workbook = new XSSFWorkbook();
+
+        // 시트 생성
+        Sheet sheet = workbook.createSheet("해안선 길이 대비 수거량(평균기준)");
+
+        // 헤더 작성
+        Row headerRow = sheet.createRow(0);
+        headerRow.createCell(0).setCellValue("해안명");
+        headerRow.createCell(1).setCellValue("평균 해안선 길이");
+        headerRow.createCell(2).setCellValue("평균 수거량");
+        headerRow.createCell(3).setCellValue("평균 해안선 길이 대비 평균 수거량");
+        headerRow.createCell(4).setCellValue("위도");
+        headerRow.createCell(5).setCellValue("경도");
+
+        // 데이터 작성
+        int rowNum = 1;
+        for (Object[] objects : data) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue((String) objects[0]);
+            row.createCell(1).setCellValue((Double) objects[1]);
+            row.createCell(2).setCellValue((Double) objects[2] * 50);
+            row.createCell(3).setCellValue(((Double) objects[2] * 50) / ((Double) objects[1]));
+            row.createCell(4).setCellValue((Double) objects[3]);
+            row.createCell(5).setCellValue((Double) objects[4]);
+        }
+
+        // HTTP 응답 설정
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment;filename=average_collection_per_coastline_length_data.xlsx");
+
+        // 엑셀 파일을 OutputStream으로 전송
+        workbook.write(response.getOutputStream());
+        workbook.close();
+        response.getOutputStream().flush(); // 데이터 전송 완료 후 flush
+    }
 }

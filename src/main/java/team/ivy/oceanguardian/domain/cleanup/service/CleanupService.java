@@ -191,7 +191,6 @@ public class CleanupService {
     @Transactional
     public void downloadCleanupData(LocalDateTime startTime, LocalDateTime endTime, HttpServletResponse response)
         throws IOException {
-        log.info("청소 데이터 다운로드");
         List<Cleanup> cleanups = cleanupRepository.findAllByCreatedAtBetween(startTime, endTime);
 
         excelService.downloadCleanupExcelFile(cleanups, response);
@@ -279,5 +278,13 @@ public class CleanupService {
             (Double) row[3],
             (Double) row[4]
         )).toList();
+    }
+
+    @Transactional
+    public void downloadAvgData(HttpServletResponse response)
+        throws IOException {
+        List<Object[]> results = cleanupRepository.findGroupedByCoastName();
+
+        excelService.downloadAvgExcelFile(results, response);
     }
 }

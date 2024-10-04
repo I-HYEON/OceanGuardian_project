@@ -125,4 +125,9 @@ public class CleanupController {
         cleanupService.downloadCleanupData(startTime, endTime, response);
     }
 
+    @Operation(summary = "평균 해안선길이 대비 평균 수거량 다운로드", description = "호출하면 평균 해안선길이 대비 평균 수거량 데이터가 xsl형식으로 다운로드됩니다.")
+    @GetMapping(value = "/download/avg")
+    public void downloadAvgData(HttpServletResponse response) throws IOException {
+        cleanupService.downloadAvgData(response);
+    }
 }
