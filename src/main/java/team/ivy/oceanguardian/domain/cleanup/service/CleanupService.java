@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
@@ -117,7 +118,7 @@ public class CleanupService {
 
     public CleanupResponse getCleanup(Long cleanupId) {
 
-        Cleanup cleanup = cleanupRepository.findById(cleanupId).orElseThrow();
+        Cleanup cleanup = cleanupRepository.findCleanupWithMember(cleanupId);
         List<Image> images = imageRepository.findByCleanup(cleanup);
 
         String beforeViewImage = null;
@@ -306,5 +307,13 @@ public class CleanupService {
             .totalCount(cleanupPage.getTotalElements())
             .cleanupList(cleanupResponsePage.getContent())
             .build();
+    }
+
+    @Transactional
+    public List<String> getAutocompleteResults(String keyword) {
+        List<String> coastNames = cleanupRepository.findCoastNamesByKeyword(keyword);
+        return coastNames.stream()
+            .sorted(Comparator.comparingInt(String::length))
+            .collect(Collectors.toList());
     }
 }

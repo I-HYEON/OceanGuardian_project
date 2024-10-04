@@ -1,6 +1,7 @@
 package team.ivy.oceanguardian.domain.cleanup.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.Builder;
 import lombok.Data;
@@ -30,6 +31,12 @@ public class CleanupResponse {
     private Double actualTrashVolume;
     @Schema(description = "주요 쓰레기 타입 (1~5)", example = "2")
     private byte mainTrashType;
+    @Schema(description = "작성 일자")
+    private LocalDateTime createdAt;
+    @Schema(description = "수정 일자")
+    private LocalDateTime updatedAt;
+    @Schema(description = "작성자 이름")
+    private String author;
     @Schema(description = "청소전 이미지 url")
     private String beforeViewImageUrl;
     @Schema(description = "청소후 이미지 url")
@@ -47,6 +54,9 @@ public class CleanupResponse {
             .coastLength(cleanup.getCoastLength())
             .actualTrashVolume(cleanup.getActualTrashVolume())
             .mainTrashType(cleanup.getMainTrashType())
+            .createdAt(cleanup.getCreatedAt())
+            .updatedAt(cleanup.getUpdatedAt())
+            .author(cleanup.getMember().getName())
             .beforeViewImageUrl(beforeViewImageUrl)
             .afterViewImageUrl(afterViewImageUrl)
             .completeViewImageUrl(completeViewImageUrl)

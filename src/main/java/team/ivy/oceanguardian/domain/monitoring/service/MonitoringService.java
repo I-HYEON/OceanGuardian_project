@@ -4,8 +4,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
@@ -89,7 +91,7 @@ public class MonitoringService {
 
     public MonitoringResponse getMonitoring(Long monitoringId) {
 
-        Monitoring monitoring = monitoringRepository.findById(monitoringId).orElseThrow();
+        Monitoring monitoring = monitoringRepository.findMonitoringWithMember(monitoringId);
         List<Image> images = imageRepository.findByMonitoring(monitoring);
 
         // 이미지 리스트가 비어 있는지 확인
@@ -207,5 +209,13 @@ public class MonitoringService {
             .build());
 
         return savedMonitoring.getId();
+    }
+
+    @Transactional
+    public List<String> getAutocompleteResults(String keyword) {
+        List<String> coastNames = monitoringRepository.findCoastNamesByKeyword(keyword);
+        return coastNames.stream()
+            .sorted(Comparator.comparingInt(String::length))
+            .collect(Collectors.toList());
     }
 }

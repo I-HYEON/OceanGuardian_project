@@ -2,6 +2,7 @@ package team.ivy.oceanguardian.domain.monitoring.dto;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Data;
 import team.ivy.oceanguardian.domain.monitoring.entity.Monitoring;
@@ -27,6 +28,12 @@ public class MonitoringResponse {
     private Double predictedTrashVolume;
     @Schema(description = "주요 쓰레기 타입 (1~5)", example = "2")
     private byte mainTrashType;
+    @Schema(description = "작성 일자")
+    private LocalDateTime createdAt;
+    @Schema(description = "수정 일자")
+    private LocalDateTime updatedAt;
+    @Schema(description = "작성자 이름")
+    private String author;
     @Schema(description = "전경 이미지 url")
     private String monitoringImageUrl;
 
@@ -40,6 +47,9 @@ public class MonitoringResponse {
             .coastLength(monitoring.getCoastLength())
             .predictedTrashVolume(monitoring.getPredictedTrashVolume())
             .mainTrashType(monitoring.getMainTrashType())
+            .createdAt(monitoring.getCreatedAt())
+            .updatedAt(monitoring.getUpdatedAt())
+            .author(monitoring.getMember().getName())
             .monitoringImageUrl(monitoringImageUrl)
             .build();
     }

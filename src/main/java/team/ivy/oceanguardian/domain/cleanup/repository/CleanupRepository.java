@@ -6,14 +6,20 @@ import java.util.Optional;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import team.ivy.oceanguardian.domain.cleanup.entity.Cleanup;
 import team.ivy.oceanguardian.domain.member.entity.Member;
 
 @Repository
 public interface CleanupRepository extends JpaRepository<Cleanup, Long> {
+
+    @EntityGraph(attributePaths = {"member"})
+    @Query("SELECT c FROM Cleanup c WHERE c.id = :cleanupId")
+    Cleanup findCleanupWithMember(@Param("cleanupId") Long cleanupId);
 
     Page<Cleanup> findAllByMember(Member member, Pageable pageable);
 
@@ -40,4 +46,8 @@ public interface CleanupRepository extends JpaRepository<Cleanup, Long> {
         "GROUP BY c.coast_name ",
         nativeQuery = true)
     List<Object[]> findGroupedByCoastName();
+
+    @Query(value = "SELECT DISTINCT ON (c.coast_name) c.coast_name " +
+        "FROM cleanup c WHERE c.coast_name LIKE :keyword% ", nativeQuery = true)
+    List<String> findCoastNamesByKeyword(@Param("keyword") String keyword);
 }

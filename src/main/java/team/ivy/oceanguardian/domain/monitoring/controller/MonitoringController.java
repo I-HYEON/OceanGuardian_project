@@ -152,4 +152,12 @@ public class MonitoringController {
     ) {
         return ApiResponse.success(monitoringService.updateSolveStatusToFalse(monitoringPk),"조사한 쓰레기 미해결");
     }
+
+    @Operation(summary = "조사모드 해안명 자동완성", description = "키워드가 포함된 해안명을 반환합니다.(키워드는 음절 기준)")
+    @GetMapping(value = "/monitoring/coast-name-list")
+    public ResponseEntity<ApiResponse<List<String>>> getAutocompleteResults(
+        @RequestParam String keyword
+    ) {
+        return ApiResponse.success(monitoringService.getAutocompleteResults(keyword),"해안명 자동완성 조회 성공");
+    }
 }

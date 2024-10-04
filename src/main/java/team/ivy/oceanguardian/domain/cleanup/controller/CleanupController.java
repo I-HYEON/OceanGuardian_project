@@ -140,4 +140,12 @@ public class CleanupController {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return ApiResponse.success(cleanupService.getCleanupListLatest(pageable),"ADMIN용 청소 리스트 조회 성공");
     }
+
+    @Operation(summary = "청소모드 해안명 자동완성", description = "키워드가 포함된 해안명을 반환합니다.(키워드는 음절 기준)")
+    @GetMapping(value = "/cleanup/coast-name-list")
+    public ResponseEntity<ApiResponse<List<String>>> getAutocompleteResults(
+        @RequestParam String keyword
+    ) {
+        return ApiResponse.success(cleanupService.getAutocompleteResults(keyword),"해안명 자동완성 조회 성공");
+    }
 }
