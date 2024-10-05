@@ -199,12 +199,29 @@ public class CleanupService {
 
     @Transactional
     public List<CleanupResponse> getCleanupsNotPickup() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Member member = memberRepository.findByPhoneNumber(username)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
-        List<Cleanup> cleanups = cleanupRepository.findAllByPickupDone(false);
+        List<Cleanup> cleanups;
+        if (member.getRoles().get(0).equals("ADMIN")) {
+            log.info("ADMIN입니다");
+            cleanups = cleanupRepository.findAllByPickupDone(false);
+        } else if (member.getRoles().get(0).equals("USER")) {
+            log.info("USER입니다");
+            cleanups = cleanupRepository.findByPickupDoneAndWorkerId(false, member.getId());
+        } else {
+            // 적절하지 않은 역할에 대해 처리 (Optional)
+            throw new CustomException(ErrorCode.NOT_FOUND_ENTITY);
+        }
+
         log.info("getCleanupsNotPickup 데이터 개수"+cleanups.size());
         return cleanups.stream().map(cleanup -> {
             Optional<Image> image = imageRepository.findByCleanupAndDescription(cleanup, "집하완료");
-            return CleanupResponse.toDto(cleanup, image);
+            Optional<Member> worker = cleanup.getWorkerId() != null
+                ? memberRepository.findById(cleanup.getWorkerId())
+                : Optional.empty();
+            return CleanupResponse.toDto(cleanup, image, worker);
         }).toList();
     }
 
@@ -315,5 +332,30 @@ public class CleanupService {
         return coastNames.stream()
             .sorted(Comparator.comparingInt(String::length))
             .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public Void assignWorker(List<Long> cleanupIdList, Long memberId) {
+        for (Long cleanupId : cleanupIdList) {
+            // cleanupId로 Cleanup 객체 조회
+            Cleanup cleanup = cleanupRepository.findById(cleanupId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY));
+
+            cleanupRepository.save(
+                Cleanup.builder()
+                    .id(cleanup.getId())  // 기존 ID 그대로 유지
+                    .serialNumber(cleanup.getSerialNumber())
+                    .location(cleanup.getLocation())
+                    .coastName(cleanup.getCoastName())
+                    .coastLength(cleanup.getCoastLength())
+                    .actualTrashVolume(cleanup.getActualTrashVolume())
+                    .mainTrashType(cleanup.getMainTrashType())
+                    .pickupDone(cleanup.getPickupDone())
+                    .workerId(memberId)  // workerId만 새롭게 설정
+                    .member(cleanup.getMember())
+                    .build()
+            );
+        }
+        return null;
     }
 }

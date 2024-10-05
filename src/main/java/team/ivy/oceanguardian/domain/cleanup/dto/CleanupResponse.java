@@ -2,11 +2,13 @@ package team.ivy.oceanguardian.domain.cleanup.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import lombok.Builder;
 import lombok.Data;
 import team.ivy.oceanguardian.domain.cleanup.entity.Cleanup;
 import team.ivy.oceanguardian.domain.image.entity.Image;
+import team.ivy.oceanguardian.domain.member.entity.Member;
 import team.ivy.oceanguardian.domain.monitoring.dto.MonitoringResponse;
 import team.ivy.oceanguardian.domain.monitoring.entity.Monitoring;
 
@@ -43,6 +45,10 @@ public class CleanupResponse {
     private String afterViewImageUrl;
     @Schema(description = "집하완료 이미지 url")
     private String completeViewImageUrl;
+    @Schema(description = "실무자 이름")
+    private String workerName;
+    @Schema(description = "실무자 전화번호")
+    private String workerPhoneNumber;
 
     public static CleanupResponse toDto(Cleanup cleanup, String beforeViewImageUrl, String afterViewImageUrl, String completeViewImageUrl ) {
         return CleanupResponse.builder()
@@ -73,13 +79,14 @@ public class CleanupResponse {
             .coastLength(cleanup.getCoastLength())
             .actualTrashVolume(cleanup.getActualTrashVolume())
             .mainTrashType(cleanup.getMainTrashType())
+            .author(cleanup.getMember().getName())
             .beforeViewImageUrl(null)
             .afterViewImageUrl(null)
             .completeViewImageUrl(null)
             .build();
     }
 
-    public static CleanupResponse toDto(Cleanup cleanup, Optional<Image> imageOptional) {
+    public static CleanupResponse toDto(Cleanup cleanup, Optional<Image> imageOptional, Optional<Member> memberOptional) {
         return CleanupResponse.builder()
             .id(cleanup.getId())
             .serialNumber(cleanup.getSerialNumber())
@@ -92,8 +99,8 @@ public class CleanupResponse {
             .beforeViewImageUrl(null)
             .afterViewImageUrl(null)
             .completeViewImageUrl(imageOptional.map(Image::getUrl).orElse(null))
+            .workerName(memberOptional.map(Member::getName).orElse(null))
+            .workerPhoneNumber(memberOptional.map(Member::getPhoneNumber).orElse(null))
             .build();
     }
-
-
 }

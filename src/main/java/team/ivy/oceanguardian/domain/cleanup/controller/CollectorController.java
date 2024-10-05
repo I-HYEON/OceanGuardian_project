@@ -82,4 +82,14 @@ public class CollectorController {
 
     }
 
+    @Operation(summary = "청소자 배정", description = "청소 데이터의 담당자를 배정합니다")
+    @GetMapping(value = "/admin/cleanup-assign")
+    public ResponseEntity<ApiResponse<Void>> assignWorker(
+        @RequestParam List<Long> cleanupIdList,
+        @RequestParam Long memberId
+    ) {
+
+        return ApiResponse.success(cleanupService.assignWorker(cleanupIdList,memberId),"담당자 배정 성공");
+    }
+
 }
