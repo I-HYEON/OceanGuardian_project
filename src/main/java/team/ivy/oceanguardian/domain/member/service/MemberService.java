@@ -4,6 +4,9 @@ import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -11,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import team.ivy.oceanguardian.domain.member.dto.JwtToken;
 import team.ivy.oceanguardian.domain.member.dto.LoginResponse;
+import team.ivy.oceanguardian.domain.member.dto.MemberListResponse;
 import team.ivy.oceanguardian.domain.member.dto.MemberResponse;
 import team.ivy.oceanguardian.domain.member.dto.SignUpRequest;
 import team.ivy.oceanguardian.domain.member.entity.Member;
@@ -54,6 +58,24 @@ public class MemberService {
 
         return LoginResponse.toDto(member,jwtTokenProvider.generateToken(authentication));
 
+    }
+
+    public MemberListResponse getUserListPage(Pageable pageable) {
+        Page<Member> memberPage = memberRepository.findByRolesContaining("USER", pageable);
+        Page<MemberResponse> memberResponsePage = memberPage.map(MemberResponse::toDto);
+
+        return MemberListResponse.builder()
+            .maxPage(memberPage.getTotalPages())
+            .nowPage(memberPage.getNumber())
+            .totalCount(memberPage.getTotalElements())
+            .userList(memberResponsePage.getContent())
+            .build();
+    }
+
+    public List<MemberResponse> getUserList() {
+        List<Member> members = memberRepository.findByRolesContaining("USER", Sort.by("name").ascending());
+
+        return members.stream().map(MemberResponse::toDto).toList();
     }
 
 }
