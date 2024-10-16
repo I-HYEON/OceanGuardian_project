@@ -19,7 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import team.ivy.oceanguardian.domain.excel.service.ExcelService;
+import team.ivy.oceanguardian.domain.admin.service.ExcelService;
 import team.ivy.oceanguardian.domain.image.entity.Image;
 import team.ivy.oceanguardian.domain.image.repository.ImageRepository;
 import team.ivy.oceanguardian.domain.image.service.S3Service;
@@ -43,7 +43,6 @@ public class MonitoringService {
     private final ImageRepository imageRepository;
     private final MemberRepository memberRepository;
     private final S3Service s3Service;
-    private final ExcelService excelService;
     private final GeometryFactory geometryFactory = new GeometryFactory();
 
     @Transactional
@@ -139,19 +138,11 @@ public class MonitoringService {
     }
 
     @Transactional
-    public List<MonitoringResponse> getMonitoringsBetween(LocalDateTime startTime, LocalDateTime endTime) {
-
-        List<Monitoring> monitorings = monitoringRepository.findAllByCreatedAtBetween(startTime, endTime);
-        log.info("getMonitoringsBetween 데이터 개수"+monitorings.size());
-        return monitorings.stream().map(MonitoringResponse::toDto).toList();
-    }
-
-    @Transactional
-    public void downloadMonitoringData(LocalDateTime startTime, LocalDateTime endTime, HttpServletResponse response)
-        throws IOException {
-        List<Monitoring> monitorings = monitoringRepository.findAllByCreatedAtBetween(startTime, endTime);
-
-        excelService.downloadMonitoringExcelFile(monitorings, response);
+    public List<String> getAutocompleteResults(String keyword) {
+        List<String> coastNames = monitoringRepository.findCoastNamesByKeyword(keyword);
+        return coastNames.stream()
+            .sorted(Comparator.comparingInt(String::length))
+            .collect(Collectors.toList());
     }
 
     @Transactional
@@ -169,53 +160,5 @@ public class MonitoringService {
             .totalCount(monitoringPage.getTotalElements())
             .monitoringList(monitoringResponsePage.getContent())
             .build();
-    }
-
-    @Transactional
-    public Long updateSolveStatusToTrue(Long monitoringId) {
-        Monitoring monitoring = monitoringRepository.findById(monitoringId).orElseThrow();
-
-        // 조사 데이터 isResolved 업데이트 후 저장
-        Monitoring savedMonitoring = monitoringRepository.save(Monitoring.builder()
-                .id(monitoring.getId())
-                .serialNumber(monitoring.getSerialNumber())
-                .location(monitoring.getLocation())
-                .coastName(monitoring.getCoastName())
-                .coastLength(monitoring.getCoastLength())
-                .predictedTrashVolume(monitoring.getPredictedTrashVolume())
-                .mainTrashType(monitoring.getMainTrashType())
-                .member(monitoring.getMember())
-                .isResolved(Boolean.TRUE)
-            .build());
-
-        return savedMonitoring.getId();
-    }
-
-    @Transactional
-    public Long updateSolveStatusToFalse(Long monitoringId) {
-        Monitoring monitoring = monitoringRepository.findById(monitoringId).orElseThrow();
-
-        // 조사 데이터 isResolved 업데이트 후 저장
-        Monitoring savedMonitoring = monitoringRepository.save(Monitoring.builder()
-            .id(monitoring.getId())
-            .serialNumber(monitoring.getSerialNumber())
-            .location(monitoring.getLocation())
-            .coastName(monitoring.getCoastName())
-            .coastLength(monitoring.getCoastLength())
-            .predictedTrashVolume(monitoring.getPredictedTrashVolume())
-            .mainTrashType(monitoring.getMainTrashType())
-            .member(monitoring.getMember())
-            .isResolved(Boolean.FALSE)
-            .build());
-
-        return savedMonitoring.getId();
-    }
-
-    @Transactional
-    public List<String> getAutocompleteResults(String keyword) {
-        List<String> coastNames = monitoringRepository.findCoastNamesByKeyword(keyword);
-        return coastNames.stream()
-            .sorted(Comparator.comparingInt(String::length))
-            .collect(Collectors.toList());
     }
 }

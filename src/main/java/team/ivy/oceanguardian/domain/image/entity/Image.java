@@ -37,10 +37,10 @@ public class Image extends AuditBaseEntity {
     @Column(nullable = false)
     private String description;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "monitoring_id", nullable = true)
+    @JoinColumn(name = "monitoring_id")
     private Monitoring monitoring;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cleanup_id", nullable = true)
+    @JoinColumn(name = "cleanup_id")
     private Cleanup cleanup;
 
 }

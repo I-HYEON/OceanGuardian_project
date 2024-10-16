@@ -41,7 +41,6 @@ public class Monitoring extends AuditBaseEntity {
     private Double predictedTrashVolume;
     @Column(nullable = false)
     private byte mainTrashType;
-    @Column(nullable = true)
     private Boolean isResolved;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_id", nullable = false)

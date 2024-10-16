@@ -42,7 +42,6 @@ public class Cleanup extends AuditBaseEntity {
     private byte mainTrashType;
     @Column(nullable = false)
     private Boolean pickupDone;
-    @Column(nullable = true)
     private Long workerId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_id", nullable = false)

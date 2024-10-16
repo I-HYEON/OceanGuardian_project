@@ -60,7 +60,7 @@ public class MemberController {
         return ApiResponse.success(memberService.login(phoneNumber, password),"로그인 성공");
     }
 
-    @Operation(summary = "_", description = "_")
+    @Operation(summary = "사용자 리스트 조회 with 페이지네이션", description = "페이지네이션 필요한 경우 이 컨트롤러 사용")
     @GetMapping(value = "/admin/user-list-page")
     public ResponseEntity<ApiResponse<MemberListResponse>> getUserListPage(
         @RequestParam(defaultValue = "0") int page,

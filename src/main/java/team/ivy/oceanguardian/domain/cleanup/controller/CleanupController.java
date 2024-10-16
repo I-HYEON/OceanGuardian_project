@@ -31,7 +31,7 @@ import team.ivy.oceanguardian.global.apiresponse.ApiResponse;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name="cleanup-controller", description = "청소 / 관리 모드 관련 컨트롤러")
+@Tag(name="cleanup-controller", description = "청소 모드 관련 컨트롤러")
 public class CleanupController {
     private final CleanupService cleanupService;
 
@@ -72,67 +72,8 @@ public class CleanupController {
         return ApiResponse.success(cleanupService.deleteCleanup(cleanupId),"청소 데이터 삭제 성공");
     }
 
-    @Operation(summary = "지도용 실쓰레기 양 데이터", description = "위치 기반 쓰레기양 표시")
-    @GetMapping(value = "/map/cleanups")
-    public ResponseEntity<ApiResponse<List<CleanupResponse>>> getCleanupsBetween(
-        @Parameter(
-            description = "시작 시간",
-            example = "2017-11-01T00:00:00",
-            required = true
-        )
-        @RequestParam
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-        LocalDateTime startTime,
-        @Parameter(
-            description = "조회 종료 시간",
-            example = "2017-12-02T23:59:59",
-            required = true
-        )
-        @RequestParam
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-        LocalDateTime endTime
-    ) {
-        return ApiResponse.success(cleanupService.getCleanupsBetween(startTime, endTime),"기간별 실쓰레기양 조회 성공");
-    }
-
-    @Operation(summary = "해안별 평균 수거량 데이터", description = "해안별 평균 수거량 데이터")
-    @GetMapping(value = "/map/average")
-    public ResponseEntity<ApiResponse<List<CoastAvg>>> getGroupedByCoastName() {
-        return ApiResponse.success(cleanupService.getGroupedByCoastName(),"해안별 조회 성공");
-    }
-
-    @Operation(summary = "청소 데이터 다운로드", description = "호출하면 조건에 맞는 청소데이터가 xsl형식으로 다운로드됩니다.")
-    @GetMapping(value = "/download/cleanup")
-    public void downloadCleanupData(
-        @Parameter(
-            description = "시작 시간",
-            example = "2017-11-01T00:00:00",
-            required = true
-        )
-        @RequestParam
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-        LocalDateTime startTime,
-        @Parameter(
-            description = "조회 종료 시간",
-            example = "2017-12-02T23:59:59",
-            required = true
-        )
-        @RequestParam
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-        LocalDateTime endTime,
-        HttpServletResponse response
-    ) throws IOException {
-        cleanupService.downloadCleanupData(startTime, endTime, response);
-    }
-
-    @Operation(summary = "평균 해안선길이 대비 평균 수거량 다운로드", description = "호출하면 평균 해안선길이 대비 평균 수거량 데이터가 xsl형식으로 다운로드됩니다.")
-    @GetMapping(value = "/download/avg")
-    public void downloadAvgData(HttpServletResponse response) throws IOException {
-        cleanupService.downloadAvgData(response);
-    }
-
-    @Operation(summary = "관리자용 청소 리스트 조회", description = "page는 요청할 페이지 쪽수, size는 데이터의 갯수를 의미")
-    @GetMapping(value = "/cleanup-list/admin")
+    @Operation(summary = "전체 청소 리스트 조회", description = "전체 청소 데이터를 호출합니다(관리자용). page는 요청할 페이지 쪽수, size는 데이터의 갯수를 의미")
+    @GetMapping(value = "/all-cleanup-list")
     public ResponseEntity<ApiResponse<CleanupListResponse>> getCleanupListLatest(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size
