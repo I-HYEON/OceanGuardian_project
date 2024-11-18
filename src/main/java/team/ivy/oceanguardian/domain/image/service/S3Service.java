@@ -39,7 +39,7 @@ public class S3Service {
                 .withCannedAcl(CannedAccessControlList.PublicRead)
                 .withMetadata(metadata));
 
-            log.info("s3에 업로드 성공: {}", webpFile.getName());
+//            log.info("s3에 업로드 성공: {}", webpFile.getName());
 
             return amazonS3.getUrl(bucketName, fileName).toString(); // 업로드 된 파일의 URL 반환
         } finally {
