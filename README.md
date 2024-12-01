@@ -39,9 +39,9 @@
 - 바다환경지킴이는 자신이 기록한 조사 목록을 조회할 수 있습니다. 관리자는 모든 조사 데이터를 확인할 수 있습니다.
 <br>
 
-| <img src="https://github.com/user-attachments/assets/6d4cd26e-d5bd-48ed-8c12-2b3669cf8e17" width="200" /> | <img src="https://github.com/user-attachments/assets/3ab80f39-d7b4-441a-a1e1-84f0cd0a7bf3" width="200" /> | <img src="https://github.com/user-attachments/assets/03cd0e32-99a0-415a-9653-d5a5ec63eac3" width="200" /> |
-| :----: | :----: | :----: |
-| 조사모드 진입 | 조사 데이터 작성 | 목록 조회 |
+| <img src="https://github.com/user-attachments/assets/6d4cd26e-d5bd-48ed-8c12-2b3669cf8e17" width="160" /> | <img src="https://github.com/user-attachments/assets/3ab80f39-d7b4-441a-a1e1-84f0cd0a7bf3" width="160" /> | <img src="https://github.com/user-attachments/assets/03cd0e32-99a0-415a-9653-d5a5ec63eac3" width="160" /> | <img src="https://github.com/user-attachments/assets/ace36020-00fa-4ac9-9c65-dfbef9accf50" width="160" /> |
+| :----: | :----: | :----: | :----: |
+| 조사모드 진입 | 조사 데이터 작성 | 목록 조회 | 상세 조회 |
 
 <br>
 
@@ -51,9 +51,9 @@
 - 바다환경지킴이는 자신이 기록한 청소 목록을 조회할 수 있습니다. 관리자는 모든 청소 데이터를 확인할 수 있습니다.
 <br>
 
-| <img src="https://github.com/user-attachments/assets/6d4cd26e-d5bd-48ed-8c12-2b3669cf8e17" width="200" /> | <img src="https://github.com/user-attachments/assets/bd35123d-3966-4d19-ba4e-e4e84c215753" width="200" /> | <img src="https://github.com/user-attachments/assets/03cd0e32-99a0-415a-9653-d5a5ec63eac3" width="200" /> |
-| :----: | :----: | :----: |
-| 청소모드 진입 | 청소 데이터 작성 | 목록 조회 |
+| <img src="https://github.com/user-attachments/assets/6d4cd26e-d5bd-48ed-8c12-2b3669cf8e17" width="160" /> | <img src="https://github.com/user-attachments/assets/bd35123d-3966-4d19-ba4e-e4e84c215753" width="160" /> | <img src="https://github.com/user-attachments/assets/10ece590-f623-4627-afbb-adde8b59be68" width="160" /> | <img src="https://github.com/user-attachments/assets/8ec42cb2-2432-4fb6-8d8b-35e96b38225c" width="160" /> |
+| :----: | :----: | :----: | :----: |
+| 청소모드 진입 | 청소 데이터 작성 | 목록 조회 | 상세 조회 |
 
 <br>
 
@@ -66,7 +66,7 @@
 
 | <img src="https://github.com/user-attachments/assets/112af02c-b44f-460e-afbe-1a59c101d542" width="160" /> | <img src="https://github.com/user-attachments/assets/dbd466a5-de2f-436e-a7d2-dbd5f499203c" width="160" /> | <img src="https://github.com/user-attachments/assets/32ecfc31-1064-417e-a978-d3e99eeee573" width="160" /> | <img src="https://github.com/user-attachments/assets/78c768e6-fdfe-4582-96e2-dd4c18f9da65" width="160" /> |
 | :----: | :----: | :----: |:----: |
-| 관리모드 진입 | 기간 내 수거량 조회</br>- 동심원 색상: 쓰레기 유형</br>- 동심원 크기: 쓰레기 수거량 | 데이터 다운로드 버튼 클릭 | 엑셀 파일 확인
+| 기간 내 수거량 조회 | - 동심원 색상: 쓰레기 유형</br>- 동심원 크기: 쓰레기 수거량 | 데이터 다운로드 버튼 클릭 | 엑셀 파일 확인
 <br>
 
 5. 수거모드(관리자)
@@ -76,9 +76,9 @@
 - 관리자는 여러 아이콘을 클릭하여 담은 후, 담당자를 배정할 수 있습니다.
 <br>
 
-| <img src="https://github.com/user-attachments/assets/31871448-c6e9-49d9-a45e-ba2c5478edd1" width="200" /> | <img src="https://github.com/user-attachments/assets/a56fa544-7b38-4362-b2ed-0b20c68ad02a" width="200" /> | <img src="https://github.com/user-attachments/assets/5ac4ae33-e0d5-4970-a9ac-c9b3a8c57d0f" width="200" /> |
-| :----: | :----: | :----: |
-| 쓰레기 데이터 3개 선택 | 담당자 선택 후 배정 | 전화 아이콘 클릭</br>사용자 번호를 기반으로</br>스마트폰의 전화 기능 연결 |
+| <img src="https://github.com/user-attachments/assets/b77e4f84-55f5-4ade-a78d-564626134732" width="160" /> | <img src="https://github.com/user-attachments/assets/31871448-c6e9-49d9-a45e-ba2c5478edd1" width="160" /> | <img src="https://github.com/user-attachments/assets/a56fa544-7b38-4362-b2ed-0b20c68ad02a" width="160" /> | <img src="https://github.com/user-attachments/assets/5ac4ae33-e0d5-4970-a9ac-c9b3a8c57d0f" width="160" /> |
+| :----: | :----: | :----: | :----: |
+| 미수거 쓰레기 전체 조회 | 쓰레기 데이터 3개 선택 | 담당자 선택 후 배정 | 전화 아이콘 클릭</br>사용자 번호를 기반으로</br>스마트폰의 전화 기능 연결 |
 
 6. 수거모드(바다환경지킴이)
 - 수거모드에서 사용자는 자신에게 배정된 쓰레기 위치만을 확인할 수 있습니다.
